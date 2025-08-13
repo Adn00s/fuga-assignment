@@ -1,6 +1,6 @@
-import '../common/env.js';
-import db from '../common/db.js';
-import l from '../common/logger.js';
+import '../server/common/env.js';
+import db from '../server/common/db.js';
+import l from '../server/common/logger.js';
 
 const createProductsTable = `
   CREATE TABLE IF NOT EXISTS products (
@@ -26,7 +26,7 @@ const insertSampleData = `
 async function initializeDatabase() {
   try {
     l.info('Initializing database...');
-    
+
     // Test connection first
     const connectionOk = await db.testConnection();
     if (!connectionOk) {

@@ -1,4 +1,4 @@
-import db from '../common/db.js';
+import db from '../../common/db.js';
 
 class ProductsDatabasePG {
   async all() {

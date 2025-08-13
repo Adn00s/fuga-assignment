@@ -12,7 +12,7 @@ class ProductsDatabase {
       releaseDate: '2024-03-15',
       coverArt: '/images/midnight-jazz.jpg',
     });
-    
+
     this.insert({
       name: 'Electric Dreams',
       artist: 'Neon Pulse',

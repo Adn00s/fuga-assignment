@@ -7,7 +7,7 @@ class DbHealthService {
       const start = Date.now();
       const result = await db.query('SELECT 1 as alive, NOW() as current_time');
       const responseTime = Date.now() - start;
-      
+
       return {
         status: 'connected',
         responseTime: `${responseTime}ms`,

@@ -8,7 +8,7 @@ class ProductService {
     const usePostgres =
       process.env.DB_HOST && process.env.DB_HOST !== 'localhost';
     this.db = usePostgres ? dbPG : dbMemory;
-    
+
     l.info(
       `ProductService initialized with ${usePostgres ? 'PostgreSQL' : 'in-memory'} database`
     );
@@ -26,12 +26,12 @@ class ProductService {
 
   create(productData) {
     l.info(`${this.constructor.name}.create()`, productData);
-    
+
     // Basic hardcoded validation for now
     if (!productData.name || !productData.artist) {
       throw new Error('Product name and artist are required');
     }
-    
+
     return this.db.insert(productData);
   }
 }
