@@ -21,15 +21,15 @@ export class Controller {
   async createWithUpload(req, res) {
     try {
       const productData = { ...req.body };
-      
+
       if (productData.price) {
         productData.price = parseFloat(productData.price);
       }
-      
+
       if (req.file) {
         productData.coverArt = `/uploads/${req.file.filename}`;
       }
-      
+
       const result = await ProductService.create(productData);
       res.status(201).location(`/api/v1/products/${result.id}`).json(result);
     } catch (error) {

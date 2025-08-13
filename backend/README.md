@@ -70,9 +70,15 @@ npm run test:debug
 
 ## Try It
 * Open your browser to [http://localhost:3000](http://localhost:3000)
-* Invoke the `/examples` endpoint 
+* Invoke the `/products` endpoint 
   ```shell
-  curl http://localhost:3000/api/v1/examples
+  curl http://localhost:3000/api/v1/products
+  ```
+* Create a new product
+  ```shell
+  curl -X POST http://localhost:3000/api/v1/products \
+    -H "Content-Type: application/json" \
+    -d '{"name":"Test Album","artist":"Test Artist","type":"Album","price":9.99}'
   ```
 
 
