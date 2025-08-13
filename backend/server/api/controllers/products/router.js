@@ -10,8 +10,10 @@ const handleUploadError = (err, req, res, next) => {
         .status(400)
         .json({ error: 'File too large. Maximum size is 5MB.' });
     }
-    if (err.message === 'Only image files are allowed') {
-      return res.status(400).json({ error: 'Only image files are allowed' });
+    if (err.message === 'Only JPG, PNG, and WebP files are allowed') {
+      return res
+        .status(400)
+        .json({ error: 'Only JPG, PNG, and WebP files are allowed' });
     }
     return res.status(400).json({ error: err.message || 'Upload failed' });
   }
