@@ -1,43 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { fetchProducts } from '../store/slices/productsSlice';
 import './ProductList.css';
 
-interface Product {
-  id: number;
-  name: string;
-  artist: string;
-  cover_art?: string;
-  created_at: string;
-}
-
 const ProductList = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchProducts = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch('/api/products');
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('loaded products:', data.length);
-        setProducts(data);
-        setError(null);
-      } else {
-        setError('Failed to load products');
-      }
-    } catch (err) {
-      console.error('Error fetching products:', err);
-      setError('Failed to load products');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const dispatch = useAppDispatch();
+  const { products, isLoading, error } = useAppSelector((state) => state.products);
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  const handleRetry = () => {
+    dispatch(fetchProducts());
+  };
 
   if (isLoading) {
     return (
@@ -54,7 +30,7 @@ const ProductList = () => {
         <h2>Products</h2>
         <div className="error">
           {error}
-          <button onClick={fetchProducts} className="retry-btn">
+          <button onClick={handleRetry} className="retry-btn">
             Retry
           </button>
         </div>

@@ -1,15 +1,19 @@
 import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { createProduct } from '../store/slices/productsSlice';
 import './ProductForm.css';
 
 const ProductForm = () => {
+  const dispatch = useAppDispatch();
+  const { isCreating } = useAppSelector((state) => state.products);
+  
   const [formData, setFormData] = useState({
     name: '',
     artist: '',
-    coverArt: null
+    coverArt: null as File | null
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name || !formData.artist) {
@@ -17,38 +21,25 @@ const ProductForm = () => {
       return;
     }
 
-    setIsSubmitting(true);
-    
     try {
-      const data = new FormData();
-      data.append('name', formData.name);
-      data.append('artist', formData.artist);
-      if (formData.coverArt) {
-        data.append('coverArt', formData.coverArt);
-      }
-
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        body: data
-      });
-
-      if (response.ok) {
-        alert('Product created!');
-        setFormData({ name: '', artist: '', coverArt: null });
-        const fileInput = document.getElementById('coverArt');
-        if (fileInput) fileInput.value = '';
-      } else {
-        alert('Error creating product');
-      }
+      await dispatch(createProduct({
+        name: formData.name,
+        artist: formData.artist,
+        coverArt: formData.coverArt || undefined
+      })).unwrap();
+      
+      // Reset form on success
+      setFormData({ name: '', artist: '', coverArt: null });
+      const fileInput = document.getElementById('coverArt') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+      alert('Product created!');
     } catch (error) {
-      console.log('Failed to create product:', error);
+      console.log('create failed:', error); // debug
       alert('Something went wrong');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
     
     if (name === 'coverArt' && files) {
@@ -105,9 +96,9 @@ const ProductForm = () => {
         <button 
           type="submit" 
           className="submit-btn"
-          disabled={isSubmitting}
+          disabled={isCreating}
         >
-          {isSubmitting ? 'Creating...' : 'Create Product'}
+          {isCreating ? 'Creating...' : 'Create Product'}
         </button>
       </form>
     </div>
