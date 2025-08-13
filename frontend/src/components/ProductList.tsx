@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react';
 import './ProductList.css';
 
+interface Product {
+  id: number;
+  name: string;
+  artist: string;
+  cover_art?: string;
+  created_at: string;
+}
+
 const ProductList = () => {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -72,7 +80,12 @@ const ProductList = () => {
                   alt={product.name}
                   className="product-image"
                   onError={(e) => {
-                    e.currentTarget.src = '/placeholder-cover.png';
+                    e.currentTarget.style.display = 'none';
+                    
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'product-image-placeholder';
+                    placeholder.innerHTML = '<span>No Image</span>';
+                    e.currentTarget.parentNode?.insertBefore(placeholder, e.currentTarget);
                   }}
                 />
               ) : (
