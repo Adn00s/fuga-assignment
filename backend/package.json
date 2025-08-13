@@ -15,7 +15,8 @@
     "db:init": "node scripts/init-db.js",
     "db:seed": "node scripts/seed-db.js",
     "db:seed:extensive": "node scripts/seed-db.js extensive",
-    "db:seed:minimal": "node scripts/seed-db.js minimal"
+    "db:seed:minimal": "node scripts/seed-db.js minimal",
+    "db:seed:dev": "psql $DATABASE_URL -f scripts/seed-dev.sql"
   },
   "dependencies": {
     "@types/cors": "^2.8.19",

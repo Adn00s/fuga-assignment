@@ -50,7 +50,7 @@ export default class ExpressServer {
       OpenApiValidator.middleware({
         apiSpec,
         validateResponses,
-        ignorePaths: /.*\/spec(\/|$)|.*\/products\/upload/,
+        ignorePaths: /.*\/spec(\/|$)|.*\/products\/upload|.*\/dev(\/|$)/,
       })
     );
   }
