@@ -1,4 +1,6 @@
 import './App.css'
+import ProductForm from './components/ProductForm'
+import ProductList from './components/ProductList'
 
 function App() {
   return (
@@ -9,8 +11,8 @@ function App() {
       
       <main className="app-main">
         <div className="container">
-          <h2>Welcome to the Music Product Manager</h2>
-          <p>Create and manage your music products</p>
+          <ProductForm />
+          <ProductList />
         </div>
       </main>
     </div>

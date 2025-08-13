@@ -1,5 +1,6 @@
 import Express from 'express';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
@@ -23,6 +24,13 @@ export default class ExpressServer {
     const validateResponses = !!(
       process.env.OPENAPI_ENABLE_RESPONSE_VALIDATION &&
       process.env.OPENAPI_ENABLE_RESPONSE_VALIDATION.toLowerCase() === 'true'
+    );
+
+    app.use(
+      cors({
+        origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+        credentials: true,
+      })
     );
 
     app.use(bodyParser.json({ limit: process.env.REQUEST_LIMIT || '100kb' }));

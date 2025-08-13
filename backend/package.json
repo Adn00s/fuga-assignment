@@ -18,9 +18,11 @@
     "db:seed:minimal": "node scripts/seed-db.js minimal"
   },
   "dependencies": {
+    "@types/cors": "^2.8.19",
     "@types/multer": "^2.0.0",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-openapi-validator": "^5.4.6",
