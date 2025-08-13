@@ -7,10 +7,8 @@ describe('Examples', () => {
     request(Server)
       .get('/api/v1/examples')
       .expect('Content-Type', /json/)
-      .then(r => {
-        expect(r.body)
-          .to.be.an.an('array')
-          .of.length(2);
+      .then((r) => {
+        expect(r.body).to.be.an.an('array').of.length(2);
       }));
 
   it('should add a new example', () =>
@@ -18,7 +16,7 @@ describe('Examples', () => {
       .post('/api/v1/examples')
       .send({ name: 'test' })
       .expect('Content-Type', /json/)
-      .then(r => {
+      .then((r) => {
         expect(r.body)
           .to.be.an.an('object')
           .that.has.property('name')
@@ -29,7 +27,7 @@ describe('Examples', () => {
     request(Server)
       .get('/api/v1/examples/2')
       .expect('Content-Type', /json/)
-      .then(r => {
+      .then((r) => {
         expect(r.body)
           .to.be.an.an('object')
           .that.has.property('name')

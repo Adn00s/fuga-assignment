@@ -1,0 +1,66 @@
+services:
+  # PostgreSQL Database - Production Configuration
+  postgres:
+    image: postgres:15-alpine
+    container_name: fuga-postgres-prod
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+      - ./backend/scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - fuga-network
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Backend API Service - Production Configuration
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: fuga-backend-prod
+    environment:
+      NODE_ENV: production
+      PORT: ${API_PORT}
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - fuga-network
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # No volume mounts - production uses baked-in code
+
+volumes:
+  postgres_prod_data:
+    driver: local
+
+networks:
+  fuga-network:
+    driver: bridge

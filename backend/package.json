@@ -12,7 +12,10 @@
     "test:debug": "mocha --inspect-brk --exit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "db:init": "node scripts/init-db.js"
+    "db:init": "node scripts/init-db.js",
+    "db:seed": "node scripts/seed-db.js",
+    "db:seed:extensive": "node scripts/seed-db.js extensive",
+    "db:seed:minimal": "node scripts/seed-db.js minimal"
   },
   "dependencies": {
     "body-parser": "^1.20.3",

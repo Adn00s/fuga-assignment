@@ -2,7 +2,6 @@ import prettier from 'eslint-plugin-prettier';
 import globals from 'globals';
 import js from '@eslint/js';
 
-
 export default [
   {
     ignores: [
@@ -16,20 +15,19 @@ export default [
   js.configs.recommended,
   {
     languageOptions: {
-        ecmaVersion: 2022,
-        sourceType: 'module',
-        globals: {
-          ...globals.node,
-          ...globals.mocha,
-        },
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        ...globals.node,
+        ...globals.mocha,
       },
+    },
     plugins: {
       prettier,
-      
     },
     rules: {
       'no-unused-vars': 'error',
-    
+
       'prettier/prettier': [
         'error',
         {
