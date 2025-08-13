@@ -10,9 +10,55 @@ tags:
     description: Simple example endpoints
   - name: Products
     description: Music product management endpoints
+  - name: Health
+    description: System health monitoring
   - name: Specification
     description: The swagger API specification
 paths:
+  /health:
+    get:
+      tags:
+        - Health
+      description: Check system health status
+      responses:
+        200:
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  timestamp:
+                    type: string
+                    format: date-time
+                  uptime:
+                    type: number
+                    example: 3600
+                  database:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: connected
+                      responseTime:
+                        type: string
+                        example: "15ms"
+        503:
+          description: System is unhealthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: unhealthy
+                  timestamp:
+                    type: string
+                    format: date-time
   /examples:
     get:
       tags:
