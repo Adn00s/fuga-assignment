@@ -28,7 +28,9 @@ const validateProductData = (data) => {
 
 export class Controller {
   all(req, res) {
-    ProductService.all().then((r) => res.json(r));
+    const { search, limit = 20, page = 1 } = req.query;
+    const offset = (page - 1) * limit;
+    ProductService.all({ search, limit: +limit, offset }).then((r) => res.json(r));
   }
 
   byId(req, res) {

@@ -1,10 +1,20 @@
 import db from '../../common/db.js';
 
 class ProductsDatabasePG {
-  async all() {
-    const result = await db.query(
-      'SELECT * FROM products ORDER BY created_at DESC'
-    );
+  async all(options = {}) {
+    const { search, limit = 20, offset = 0 } = options;
+    let query = 'SELECT * FROM products';
+    const params = [];
+
+    if (search) {
+      query += ' WHERE name ILIKE $1 OR artist ILIKE $1';
+      params.push(`%${search}%`);
+    }
+
+    query += ' ORDER BY created_at DESC LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
+    params.push(limit, offset);
+
+    const result = await db.query(query, params);
     return result.rows;
   }
 

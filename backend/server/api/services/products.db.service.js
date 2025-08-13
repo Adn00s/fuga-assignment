@@ -23,8 +23,19 @@ class ProductsDatabase {
     });
   }
 
-  all() {
-    return Promise.resolve(this._data);
+  all(options = {}) {
+    const { search, limit = 20, offset = 0 } = options;
+    let data = [...this._data];
+
+    if (search) {
+      const term = search.toLowerCase();
+      data = data.filter(p => 
+        p.name.toLowerCase().includes(term) || 
+        p.artist.toLowerCase().includes(term)
+      );
+    }
+
+    return Promise.resolve(data.slice(offset, offset + limit));
   }
 
   byId(id) {

@@ -14,9 +14,9 @@ class ProductService {
     );
   }
 
-  all() {
+  all(options = {}) {
     l.info(`${this.constructor.name}.all()`);
-    return this.db.all();
+    return this.db.all(options);
   }
 
   byId(id) {
