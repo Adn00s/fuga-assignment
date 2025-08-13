@@ -1,12 +1,17 @@
 import l from '../../common/logger.js';
 import dbMemory from './products.db.service.js';
-// import dbPG from './products.db.pg.service.js'; // Uncomment when PostgreSQL is available
+import dbPG from './products.db.pg.service.js';
 
 class ProductService {
   constructor() {
-    // For now, use in-memory database until PostgreSQL is set up
-    this.db = dbMemory;
-    // TODO: Switch to PostgreSQL when available: this.db = dbPG;
+    // Use PostgreSQL if DB_HOST is set (Docker environment), otherwise use in-memory
+    const usePostgres =
+      process.env.DB_HOST && process.env.DB_HOST !== 'localhost';
+    this.db = usePostgres ? dbPG : dbMemory;
+    
+    l.info(
+      `ProductService initialized with ${usePostgres ? 'PostgreSQL' : 'in-memory'} database`
+    );
   }
 
   all() {
