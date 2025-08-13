@@ -25,6 +25,6 @@ CREATE INDEX IF NOT EXISTS idx_products_artist ON products(artist);
 CREATE INDEX IF NOT EXISTS idx_products_type ON products(type);
 CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at);
 
--- Grant permissions (if needed)
-GRANT ALL PRIVILEGES ON TABLE products TO fuga_user;
-GRANT USAGE, SELECT ON SEQUENCE products_id_seq TO fuga_user;
+-- Grant permissions to postgres user (default for development)
+-- GRANT ALL PRIVILEGES ON TABLE products TO postgres;
+-- GRANT USAGE, SELECT ON SEQUENCE products_id_seq TO postgres;
