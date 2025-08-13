@@ -8,6 +8,8 @@ servers:
 tags:
   - name: Examples
     description: Simple example endpoints
+  - name: Products
+    description: Music product management endpoints
   - name: Specification
     description: The swagger API specification
 paths:
@@ -97,6 +99,92 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /products:
+    get:
+      tags:
+        - Products
+      description: Fetch all music products
+      responses:
+        200:
+          description: Return all products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        4XX:
+          description: Products not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        5XX:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Products
+      description: Create a new music product
+      requestBody:
+        description: Product data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductBody'
+        required: true
+      responses:
+        201:
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        4XX:
+          description: Invalid product data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        5XX:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          description: The id of the product to retrieve
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Return the product with the specified id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        4XX:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        5XX:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /spec:
     get:
       tags:
@@ -129,3 +217,62 @@ components:
         name:
           type: string
           example: no_stress
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Midnight Jazz Sessions
+        artist:
+          type: string
+          example: The Blue Note Collective
+        type:
+          type: string
+          example: Album
+        price:
+          type: number
+          format: float
+          example: 12.99
+        releaseDate:
+          type: string
+          format: date
+          example: "2024-03-15"
+        coverArt:
+          type: string
+          example: "/images/midnight-jazz.jpg"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-08-15T19:00:00.000Z"
+
+    ProductBody:
+      title: Product
+      required:
+        - name
+        - artist
+      type: object
+      properties:
+        name:
+          type: string
+          example: Electric Dreams
+        artist:
+          type: string
+          example: Neon Pulse
+        type:
+          type: string
+          example: Single
+        price:
+          type: number
+          format: float
+          example: 2.99
+        releaseDate:
+          type: string
+          format: date
+          example: "2024-08-01"
+        coverArt:
+          type: string
+          example: "/images/electric-dreams.jpg"
