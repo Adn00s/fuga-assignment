@@ -18,20 +18,24 @@ export class Controller {
     );
   }
 
-  createWithUpload(req, res) {
-    const productData = { ...req.body };
-    
-    if (productData.price) {
-      productData.price = parseFloat(productData.price);
+  async createWithUpload(req, res) {
+    try {
+      const productData = { ...req.body };
+      
+      if (productData.price) {
+        productData.price = parseFloat(productData.price);
+      }
+      
+      if (req.file) {
+        productData.coverArt = `/uploads/${req.file.filename}`;
+      }
+      
+      const result = await ProductService.create(productData);
+      res.status(201).location(`/api/v1/products/${result.id}`).json(result);
+    } catch (error) {
+      console.error('Upload error:', error);
+      res.status(500).json({ error: 'Failed to create product with upload' });
     }
-    
-    if (req.file) {
-      productData.coverArt = `/uploads/${req.file.filename}`;
-    }
-    
-    ProductService.create(productData).then((r) =>
-      res.status(201).location(`/api/v1/products/${r.id}`).json(r)
-    );
   }
 }
 export default new Controller();

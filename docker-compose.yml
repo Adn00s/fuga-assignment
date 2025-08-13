@@ -49,7 +49,6 @@ services:
       - fuga-network
     command: npm run dev
 
-  # Frontend (placeholder for Phase 2)
   # frontend:
   #   build:
   #     context: ./frontend

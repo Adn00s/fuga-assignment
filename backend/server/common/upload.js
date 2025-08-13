@@ -1,15 +1,21 @@
 import multer from 'multer';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { existsSync, mkdirSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const uploadDir = join(__dirname, '../../uploads');
+
+if (!existsSync(uploadDir)) {
+  mkdirSync(uploadDir, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, join(__dirname, '../../uploads'));
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-        const timestamp = Date.now();
+    const timestamp = Date.now();
     const originalName = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
     cb(null, `${timestamp}-${originalName}`);
   },
@@ -18,7 +24,18 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024,   },
+    fileSize: 5 * 1024 * 1024,
+    fieldSize: 1024 * 1024,
+    fields: 10,
+    files: 1,
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype && file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  },
 });
 
 export default upload;
