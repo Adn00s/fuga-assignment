@@ -88,11 +88,75 @@ paths:
         - Products
       description: Create a new music product
       requestBody:
-        description: Product data
+        description: Product data with optional cover art upload
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ProductBody'
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                artist:
+                  type: string
+                type:
+                  type: string
+                price:
+                  type: number
+                  format: float
+                releaseDate:
+                  type: string
+                  format: date
+                coverArt:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        201:
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        4XX:
+          description: Invalid product data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        5XX:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/upload:
+    post:
+      tags:
+        - Products
+      description: Create a new music product with file upload
+      requestBody:
+        description: Product data with cover art upload
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                artist:
+                  type: string
+                type:
+                  type: string
+                price:
+                  type: string
+                releaseDate:
+                  type: string
+                coverArt:
+                  type: string
+                  format: binary
         required: true
       responses:
         201:
