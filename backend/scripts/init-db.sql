@@ -1,6 +1,16 @@
 -- Initialize Fuga Music Database
 -- This script runs when PostgreSQL container starts
 
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create products table
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
@@ -21,6 +31,7 @@ INSERT INTO products (name, artist, type, price, release_date, cover_art) VALUES
 ON CONFLICT DO NOTHING;
 
 -- Create index for faster queries
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_products_artist ON products(artist);
 CREATE INDEX IF NOT EXISTS idx_products_type ON products(type);
 CREATE INDEX IF NOT EXISTS idx_products_created_at ON products(created_at);

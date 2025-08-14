@@ -19,14 +19,18 @@
     "db:seed:dev": "psql $DATABASE_URL -f scripts/seed-dev.sql"
   },
   "dependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
+    "bcrypt": "^6.0.0",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-openapi-validator": "^5.4.6",
+    "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "pg": "^8.16.3",
     "pino": "^9.6.0"
