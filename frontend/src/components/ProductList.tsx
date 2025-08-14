@@ -1,15 +1,41 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { fetchProducts } from '../store/slices/productsSlice';
+import SearchFilters from './SearchFilters';
 import './ProductList.css';
 
 const ProductList = () => {
   const dispatch = useAppDispatch();
-  const { products, isLoading, error } = useAppSelector((state) => state.products);
+  const { products, isLoading, error, searchQuery, selectedArtist, sortBy } = useAppSelector((state) => state.products);
 
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
+
+  const filteredProducts = useMemo(() => {
+    let filtered = products;
+
+    if (searchQuery) {
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.artist.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (selectedArtist) {
+      filtered = filtered.filter(product => product.artist === selectedArtist);
+    }
+
+    if (sortBy === 'alphabetical') {
+      filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      filtered = [...filtered].sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    }
+
+    return filtered;
+  }, [products, searchQuery, selectedArtist, sortBy]);
 
   const handleRetry = () => {
     dispatch(fetchProducts());
@@ -42,13 +68,19 @@ const ProductList = () => {
     <div className="product-list-container">
       <h2>Products ({products.length})</h2>
       
-      {products.length === 0 ? (
+      <SearchFilters />
+      
+      {filteredProducts.length === 0 ? (
         <div className="empty-state">
-          <p>No products yet. Create your first product above!</p>
+          {products.length === 0 ? (
+            <p>No products yet. Create your first product above!</p>
+          ) : (
+            <p>No products match your search criteria.</p>
+          )}
         </div>
       ) : (
         <div className="products-grid">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <div key={product.id} className="product-card">
               {product.cover_art ? (
                 <img 

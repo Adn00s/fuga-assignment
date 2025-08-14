@@ -14,6 +14,9 @@ interface ProductsState {
   isLoading: boolean;
   error: string | null;
   isCreating: boolean;
+  searchQuery: string;
+  selectedArtist: string;
+  sortBy: 'newest' | 'alphabetical';
 }
 
 const initialState: ProductsState = {
@@ -21,6 +24,9 @@ const initialState: ProductsState = {
   isLoading: false,
   error: null,
   isCreating: false,
+  searchQuery: '',
+  selectedArtist: '',
+  sortBy: 'newest',
 };
 
 export const fetchProducts = createAsyncThunk(
@@ -65,6 +71,15 @@ const productsSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    setSearchQuery: (state, action: PayloadAction<string>) => {
+      state.searchQuery = action.payload;
+    },
+    setSelectedArtist: (state, action: PayloadAction<string>) => {
+      state.selectedArtist = action.payload;
+    },
+    setSortBy: (state, action: PayloadAction<'newest' | 'alphabetical'>) => {
+      state.sortBy = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -94,5 +109,5 @@ const productsSlice = createSlice({
   },
 });
 
-export const { clearError } = productsSlice.actions;
+export const { clearError, setSearchQuery, setSelectedArtist, setSortBy } = productsSlice.actions;
 export default productsSlice.reducer;
