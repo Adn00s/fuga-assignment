@@ -31,19 +31,33 @@ const initialState: ProductsState = {
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async () => {
-    const response = await fetch('/api/products');
+  async (_, { getState }) => {
+    const state = getState() as { auth: { token: string | null } };
+    const token = state.auth.token;
+
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch('/api/v1/products', {
+      headers,
+    });
+
     if (!response.ok) {
       throw new Error('Failed to fetch products');
     }
-    const data = await response.json();
-    console.log('fetched products:', data.length);     return data;
+
+    return response.json();
   }
 );
 
 export const createProduct = createAsyncThunk(
   'products/createProduct',
-  async (productData: { name: string; artist: string; coverArt?: File }) => {
+  async (productData: { name: string; artist: string; coverArt?: File }, { getState }) => {
+    const state = getState() as { auth: { token: string | null } };
+    const token = state.auth.token;
+
     const formData = new FormData();
     formData.append('name', productData.name);
     formData.append('artist', productData.artist);
@@ -51,8 +65,14 @@ export const createProduct = createAsyncThunk(
       formData.append('coverArt', productData.coverArt);
     }
 
-    const response = await fetch('/api/products', {
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch('/api/v1/products', {
       method: 'POST',
+      headers,
       body: formData,
     });
 

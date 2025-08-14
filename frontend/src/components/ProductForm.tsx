@@ -6,12 +6,22 @@ import './ProductForm.css';
 const ProductForm = () => {
   const dispatch = useAppDispatch();
   const { isCreating } = useAppSelector((state) => state.products);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   
   const [formData, setFormData] = useState({
     name: '',
     artist: '',
     coverArt: null as File | null
   });
+
+  if (!isAuthenticated) {
+    return (
+      <div className="auth-required">
+        <h2>Authentication Required</h2>
+        <p>Please log in to create products.</p>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
