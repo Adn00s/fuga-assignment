@@ -49,20 +49,24 @@ services:
       - fuga-network
     command: npm run dev
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   container_name: fuga-frontend
-  #   ports:
-  #     - "5173:5173"
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #   depends_on:
-  #     - backend
-  #   networks:
-  #     - fuga-network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fuga-frontend
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - "${FRONTEND_PORT:-3001}:3001"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - fuga-network
+    command: npm run dev
 
 volumes:
   postgres_data:

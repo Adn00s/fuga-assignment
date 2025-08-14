@@ -9,6 +9,9 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5173
+ENV DOCKER_ENV=true
+ENV NODE_ENV=development
+
+EXPOSE 3001
 
 CMD ["npm", "run", "dev"]
