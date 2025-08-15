@@ -12,6 +12,18 @@ export default defineConfig({
           ? 'http://backend:3000'
           : 'http://localhost:3000',
         changeOrigin: true,
+      },
+      '/uploads': {
+        target: process.env.NODE_ENV === 'development' && process.env.DOCKER_ENV 
+          ? 'http://backend:3000'
+          : 'http://localhost:3000',
+        changeOrigin: true,
+      },
+      '/images': {
+        target: process.env.NODE_ENV === 'development' && process.env.DOCKER_ENV 
+          ? 'http://backend:3000'
+          : 'http://localhost:3000',
+        changeOrigin: true,
       }
     }
   }

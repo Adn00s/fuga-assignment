@@ -70,7 +70,9 @@ export const createProduct = createAsyncThunk(
       headers.Authorization = `Bearer ${token}`;
     }
 
-    const response = await fetch('/api/v1/products', {
+    const endpoint = productData.coverArt ? '/api/v1/products/upload' : '/api/v1/products';
+
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers,
       body: formData,
