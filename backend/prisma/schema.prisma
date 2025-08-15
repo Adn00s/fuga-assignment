@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  artist      String    @db.VarChar(255)
+  type        String?   @default("Album") @db.VarChar(50)
+  price       Decimal?  @default(0.00) @db.Decimal(10, 2)
+  releaseDate DateTime? @map("release_date") @db.Date
+  coverArt    String?   @map("cover_art") @db.VarChar(500)
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([artist], map: "idx_products_artist")
+  @@index([createdAt], map: "idx_products_created_at")
+  @@index([type], map: "idx_products_type")
+  @@map("products")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique @db.VarChar(255)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  name         String    @db.VarChar(255)
+  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("users")
+}

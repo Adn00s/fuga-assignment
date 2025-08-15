@@ -78,37 +78,44 @@ export const createProduct = createAsyncThunk(
 export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async (productData: { id: number; name: string; artist: string; coverArt?: File }, { getState }) => {
-    let body: FormData | string;
-    let endpoint: string;
-    let headers = getAuthHeaders(getState);
-
     if (productData.coverArt) {
+      // For file uploads, use FormData like createProduct
       const formData = new FormData();
       formData.append('name', productData.name);
       formData.append('artist', productData.artist);
       formData.append('coverArt', productData.coverArt);
-      body = formData;
-      endpoint = `/api/v1/products/${productData.id}/upload`;
-    } else {
-      headers = { ...headers, 'Content-Type': 'application/json' };
-      body = JSON.stringify({
-        name: productData.name,
-        artist: productData.artist
+
+      const response = await fetch(`/api/v1/products/upload/${productData.id}`, {
+        method: 'POST',
+        headers: getAuthHeaders(getState),
+        body: formData,
       });
-      endpoint = `/api/v1/products/${productData.id}`;
+
+      if (!response.ok) {
+        throw new Error('Failed to update product');
+      }
+
+      return response.json();
+    } else {
+      // For regular updates, use JSON
+      const response = await fetch(`/api/v1/products/${productData.id}`, {
+        method: 'PUT',
+        headers: { 
+          ...getAuthHeaders(getState), 
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify({
+          name: productData.name,
+          artist: productData.artist
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update product');
+      }
+
+      return response.json();
     }
-
-    const response = await fetch(endpoint, {
-      method: 'PUT',
-      headers,
-      body,
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to update product');
-    }
-
-    return response.json();
   }
 );
 

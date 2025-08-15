@@ -1,17 +1,10 @@
 import l from '../../common/logger.js';
-import dbMemory from './products.db.service.js';
-import dbPG from './products.db.pg.service.js';
+import dbPrisma from './products.prisma.service.js';
 
 class ProductService {
   constructor() {
-    // Use PostgreSQL if DB_HOST is set (Docker environment), otherwise use in-memory
-    const usePostgres =
-      process.env.DB_HOST && process.env.DB_HOST !== 'localhost';
-    this.db = usePostgres ? dbPG : dbMemory;
-
-    l.info(
-      `ProductService initialized with ${usePostgres ? 'PostgreSQL' : 'in-memory'} database`
-    );
+    this.db = dbPrisma;
+    l.info('ProductService initialized with Prisma ORM');
   }
 
   all(options = {}) {
@@ -27,7 +20,6 @@ class ProductService {
   create(productData) {
     l.info(`${this.constructor.name}.create()`, productData);
 
-    // Basic hardcoded validation for now
     if (!productData.name || !productData.artist) {
       throw new Error('Product name and artist are required');
     }

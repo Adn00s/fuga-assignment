@@ -13,8 +13,7 @@ function App() {
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
-    // Check if user is already logged in on app start
-    if (token && !isAuthenticated) {
+        if (token && !isAuthenticated) {
       dispatch(fetchProfile());
     }
   }, [dispatch, token, isAuthenticated]);
@@ -23,18 +22,14 @@ function App() {
     try {
       await dispatch(loginUser({ email, password })).unwrap();
       setShowAuthModal(false);
-    } catch {
-      // Error is handled by the reducer
-    }
+    } catch { /* empty */ }
   };
 
   const handleRegister = async (email: string, password: string, name: string) => {
     try {
       await dispatch(registerUser({ email, password, name })).unwrap();
       setShowAuthModal(false);
-    } catch {
-      // Error is handled by the reducer
-    }
+    } catch { /* empty */ }
   };
 
   const handleCloseModal = () => {
@@ -48,7 +43,7 @@ function App() {
       
       <main className="app-main">
         <div className="container">
-          <ProductForm />
+          {isAuthenticated && <ProductForm />}
           <ProductList />
         </div>
       </main>

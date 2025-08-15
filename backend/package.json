@@ -19,6 +19,7 @@
     "db:seed:dev": "psql $DATABASE_URL -f scripts/seed-dev.sql"
   },
   "dependencies": {
+    "@prisma/client": "^6.14.0",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/jsonwebtoken": "^9.0.10",
@@ -35,7 +36,8 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
     "pg": "^8.16.3",
-    "pino": "^9.6.0"
+    "pino": "^9.6.0",
+    "prisma": "^6.14.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",

@@ -1,4 +1,4 @@
-import ProductService from '../../services/products.service.js';
+import ProductService from '../../services/products.prisma.service.js';
 
 const validateProductData = (data) => {
   const errors = [];

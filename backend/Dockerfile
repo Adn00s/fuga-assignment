@@ -6,6 +6,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN npx prisma generate
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs

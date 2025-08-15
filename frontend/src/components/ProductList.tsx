@@ -8,6 +8,7 @@ import './ProductList.css';
 const ProductList = () => {
   const dispatch = useAppDispatch();
   const { products, isLoading, error, searchQuery, selectedArtist, sortBy } = useAppSelector((state) => state.products);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
@@ -142,22 +143,24 @@ const ProductList = () => {
                 <p className="product-date">
                   Added: {new Date(product.created_at).toLocaleDateString()}
                 </p>
-                <div className="product-actions">
-                  <button
-                    className="edit-btn"
-                    onClick={() => handleEdit(product)}
-                    title="Edit product"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="delete-btn"
-                    onClick={() => handleDeleteClick(product.id)}
-                    title="Delete product"
-                  >
-                    Delete
-                  </button>
-                </div>
+                {isAuthenticated && (
+                  <div className="product-actions">
+                    <button
+                      className="edit-btn"
+                      onClick={() => handleEdit(product)}
+                      title="Edit product"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDeleteClick(product.id)}
+                      title="Delete product"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}

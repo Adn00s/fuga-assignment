@@ -1,10 +1,10 @@
 import * as express from 'express';
 import controller from './controller.js';
 import upload from '../../../common/upload.js';
+import authMiddleware from '../../middlewares/auth.middleware.js';
 
 const handleUploadError = (err, req, res, next) => {
   if (err) {
-    console.error('Upload middleware error:', err);
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res
         .status(400)
@@ -24,18 +24,20 @@ export default express
   .Router()
   .post(
     '/upload',
+    authMiddleware,
     upload.single('coverArt'),
     handleUploadError,
     controller.createWithUpload
   )
-  .put(
-    '/:id/upload',
+  .post(
+    '/upload/:id',
+    authMiddleware,
     upload.single('coverArt'),
     handleUploadError,
     controller.updateWithUpload
   )
-  .post('/', controller.create)
+  .post('/', authMiddleware, controller.create)
   .get('/', controller.all)
   .get('/:id', controller.byId)
-  .put('/:id', controller.update)
-  .delete('/:id', controller.delete);
+  .put('/:id', authMiddleware, controller.update)
+  .delete('/:id', authMiddleware, controller.delete);

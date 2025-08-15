@@ -36,6 +36,7 @@ services:
       DB_NAME: ${DB_NAME:-fuga_music}
       DB_USER: ${DB_USER:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DATABASE_URL: postgresql://${DB_USER:-postgres}:${DB_PASSWORD:-postgres}@postgres:${DB_PORT:-5432}/${DB_NAME:-fuga_music}
       LOG_LEVEL: ${LOG_LEVEL:-debug}
     ports:
       - "${API_PORT:-3000}:${API_PORT:-3000}"

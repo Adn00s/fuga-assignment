@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import db from '../../../common/db.js';
+import prismaDb from '../../../common/prisma.js';
 import l from '../../../common/logger.js';
 
 export class Controller {
@@ -12,22 +12,23 @@ export class Controller {
         return res.status(400).json({ error: 'Missing required fields' });
       }
 
-      const existing = await db.query('SELECT id FROM users WHERE email = $1', [
-        email,
-      ]);
+      const existing = await prismaDb.client.user.findUnique({
+        where: { email },
+      });
 
-      if (existing.rows.length > 0) {
+      if (existing) {
         return res.status(400).json({ error: 'Email already taken' });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const result = await db.query(
-        'INSERT INTO users (email, password_hash, name) VALUES ($1, $2, $3) RETURNING id, email, name, created_at',
-        [email, hashedPassword, name]
-      );
-
-      const user = result.rows[0];
+      const user = await prismaDb.client.user.create({
+        data: {
+          email,
+          passwordHash: hashedPassword,
+          name,
+        },
+      });
 
       const token = jwt.sign(
         { userId: user.id, email: user.email },
@@ -42,7 +43,7 @@ export class Controller {
           id: user.id,
           email: user.email,
           name: user.name,
-          created_at: user.created_at,
+          created_at: user.createdAt,
         },
         token,
       });
@@ -60,18 +61,15 @@ export class Controller {
         return res.status(400).json({ error: 'Email and password required' });
       }
 
-      const result = await db.query(
-        'SELECT id, email, password_hash, name FROM users WHERE email = $1',
-        [email]
-      );
+      const user = await prismaDb.client.user.findUnique({
+        where: { email },
+      });
 
-      if (result.rows.length === 0) {
+      if (!user) {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
-      const user = result.rows[0];
-
-      const isValid = await bcrypt.compare(password, user.password_hash);
+      const isValid = await bcrypt.compare(password, user.passwordHash);
       if (!isValid) {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
@@ -100,21 +98,19 @@ export class Controller {
 
   async me(req, res) {
     try {
-      const { userId } = req.user;
+      const user = await prismaDb.client.user.findUnique({
+        where: { id: req.user.userId },
+        select: { id: true, email: true, name: true },
+      });
 
-      const result = await db.query(
-        'SELECT id, email, name, created_at FROM users WHERE id = $1',
-        [userId]
-      );
-
-      if (result.rows.length === 0) {
+      if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
 
-      res.json({ user: result.rows[0] });
+      res.json(user);
     } catch (error) {
-      l.error('Profile fetch failed', error.message);
-      res.status(500).json({ error: 'Failed to get profile' });
+      l.error('Get profile error:', error.message);
+      res.status(500).json({ error: 'Server error' });
     }
   }
 }
