@@ -1,125 +1,54 @@
-# .
+# Backend API
 
-My cool app
+Express.js API for music products. Basic CRUD, file uploads, JWT auth.
 
-## Get Started
+## Setup
 
-Get started developing...
-
-```shell
-# install deps
+```bash
 npm install
-
-# run in development mode
-npm run dev
-
-# run tests
-npm run test
-```
-
-## How do I modify the example API and make it my own?
-
-There are two key files that enable you to customize and describe your API:
-1. `server/routes.js` - This references the implementation of all of your routes. Add as many routes as you like and point each route your express handler functions.
-2. `server/common/api.yaml` - This file contains your [OpenAPI spec](https://swagger.io/specification/). Describe your API here. It's recommended that you to declare any and all validation logic in this YAML. This backend uses [express-openapi-validator](https://github.com/cdimascio/express-openapi-validator) to automatically handle all API validation based on what you've defined in the spec.
-
-## Install Dependencies
-
-Install all package dependencies (one time operation)
-
-```shell
-npm install
-```
-
-## Run It
-#### Run in *development* mode:
-Runs the application is development mode. Should not be used in production
-
-```shell
+cp .env.example .env
+# edit .env with database details
+npm run migrate up
 npm run dev
 ```
 
-or debug it
+Server runs on http://localhost:8000
+API docs at http://localhost:8000/api-docs
 
-```shell
-npm run dev:debug
+## Environment (.env)
+
+```env
+DATABASE_URL=postgresql://user:pass@localhost:5432/fuga_music
+JWT_SECRET=your-secret-here
+PORT=8000
 ```
 
-#### Run in *production* mode:
+## Main Endpoints
 
-Compiles the application and starts it in production production mode.
+- `GET /api/v1/products` - list products
+- `POST /api/v1/products` - create product (auth required)
+- `PUT /api/v1/products/:id` - update product (auth required)
+- `DELETE /api/v1/products/:id` - delete product (auth required)
+- `POST /api/v1/auth/login` - login
+- `POST /api/v1/auth/register` - register
 
-```shell
-npm run compile
-npm start
+## Scripts
+
+```bash
+npm run dev         # development server
+npm run build       # build for production
+npm test           # run tests
+npm run migrate up  # run database migrations
 ```
 
-## Test It
+## File Uploads
 
-Run the Mocha unit tests
+Images saved to `uploads/` directory. Max 5MB, JPEG/PNG/WebP only.
 
-```shell
-npm test
-```
+## Database
 
-or debug them
+PostgreSQL with these tables:
+- `users` - user accounts
+- `products` - music products
 
-```shell
-npm run test:debug
-```
-
-## Try It
-* Open your browser to [http://localhost:3000](http://localhost:3000)
-* Invoke the `/products` endpoint 
-  ```shell
-  curl http://localhost:3000/api/v1/products
-  ```
-* Create a new product
-  ```shell
-  curl -X POST http://localhost:3000/api/v1/products \
-    -H "Content-Type: application/json" \
-    -d '{"name":"Test Album","artist":"Test Artist","type":"Album","price":9.99}'
-  ```
-
-
-## Debug It
-
-#### Debug the server:
-
-```
-npm run dev:debug
-```
-
-#### Debug Tests
-
-```
-npm run test:debug
-```
-
-#### Debug with VSCode
-
-Add these [contents](https://github.com/cdimascio/express-openapi-validator/blob/master/example/app/.vscode/launch.json) to your `.vscode/launch.json` file
-## Lint It
-
-View prettier linter output
-
-```
-npm run lint
-```
-
-Fix all prettier linter errors
-
-```
-npm run lint
-```
-
-## Deploy It
-
-Deploy to CloudFoundry
-
-```shell
-cf push .
-```
-
-
-   
+Run `npm run migrate up` to create tables.
