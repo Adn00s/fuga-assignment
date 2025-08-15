@@ -1,12 +1,16 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchProducts } from '../store/slices/productsSlice';
+import { fetchProducts, deleteProduct, type Product } from '../store/slices/productsSlice';
 import SearchFilters from './SearchFilters';
+import EditProductForm from './EditProductForm';
 import './ProductList.css';
 
 const ProductList = () => {
   const dispatch = useAppDispatch();
   const { products, isLoading, error, searchQuery, selectedArtist, sortBy } = useAppSelector((state) => state.products);
+  
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -36,6 +40,36 @@ const ProductList = () => {
 
     return filtered;
   }, [products, searchQuery, selectedArtist, sortBy]);
+
+  // Event handlers for edit and delete
+  const handleEdit = (product: Product) => {
+    setEditingProduct(product);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProduct(null);
+  };
+
+  const handleSaveEdit = () => {
+    setEditingProduct(null);
+  };
+
+  const handleDeleteClick = (productId: number) => {
+    setShowDeleteConfirm(productId);
+  };
+
+  const handleConfirmDelete = async (productId: number) => {
+    try {
+      await dispatch(deleteProduct(productId)).unwrap();
+      setShowDeleteConfirm(null);
+    } catch (error) {
+      console.error('Failed to delete product:', error);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(null);
+  };
 
   const handleRetry = () => {
     dispatch(fetchProducts());
@@ -108,9 +142,58 @@ const ProductList = () => {
                 <p className="product-date">
                   Added: {new Date(product.created_at).toLocaleDateString()}
                 </p>
+                <div className="product-actions">
+                  <button
+                    className="edit-btn"
+                    onClick={() => handleEdit(product)}
+                    title="Edit product"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDeleteClick(product.id)}
+                    title="Delete product"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           ))}
+        </div>
+      )}
+      
+      {/* Edit Product Modal */}
+      {editingProduct && (
+        <EditProductForm
+          product={editingProduct}
+          onCancel={handleCancelEdit}
+          onSuccess={handleSaveEdit}
+        />
+      )}
+      
+      {/* Delete Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div className="overlay">
+          <div className="delete-confirm-dialog">
+            <h3>Delete Product</h3>
+            <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+            <div className="dialog-actions">
+              <button
+                className="cancel-btn"
+                onClick={handleCancelDelete}
+              >
+                Cancel
+              </button>
+              <button
+                className="confirm-btn"
+                onClick={() => handleConfirmDelete(showDeleteConfirm)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

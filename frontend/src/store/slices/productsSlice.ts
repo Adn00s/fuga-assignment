@@ -29,19 +29,16 @@ const initialState: ProductsState = {
   sortBy: 'newest',
 };
 
+const getAuthHeaders = (getState: any): Record<string, string> => {
+  const token = (getState() as { auth: { token: string | null } }).auth.token;
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (_, { getState }) => {
-    const state = getState() as { auth: { token: string | null } };
-    const token = state.auth.token;
-
-    const headers: Record<string, string> = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-
     const response = await fetch('/api/v1/products', {
-      headers,
+      headers: getAuthHeaders(getState),
     });
 
     if (!response.ok) {
@@ -55,9 +52,6 @@ export const fetchProducts = createAsyncThunk(
 export const createProduct = createAsyncThunk(
   'products/createProduct',
   async (productData: { name: string; artist: string; coverArt?: File }, { getState }) => {
-    const state = getState() as { auth: { token: string | null } };
-    const token = state.auth.token;
-
     const formData = new FormData();
     formData.append('name', productData.name);
     formData.append('artist', productData.artist);
@@ -65,16 +59,11 @@ export const createProduct = createAsyncThunk(
       formData.append('coverArt', productData.coverArt);
     }
 
-    const headers: Record<string, string> = {};
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-
     const endpoint = productData.coverArt ? '/api/v1/products/upload' : '/api/v1/products';
 
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers,
+      headers: getAuthHeaders(getState),
       body: formData,
     });
 
@@ -83,6 +72,59 @@ export const createProduct = createAsyncThunk(
     }
 
     return response.json();
+  }
+);
+
+export const updateProduct = createAsyncThunk(
+  'products/updateProduct',
+  async (productData: { id: number; name: string; artist: string; coverArt?: File }, { getState }) => {
+    let body: FormData | string;
+    let endpoint: string;
+    let headers = getAuthHeaders(getState);
+
+    if (productData.coverArt) {
+      const formData = new FormData();
+      formData.append('name', productData.name);
+      formData.append('artist', productData.artist);
+      formData.append('coverArt', productData.coverArt);
+      body = formData;
+      endpoint = `/api/v1/products/${productData.id}/upload`;
+    } else {
+      headers = { ...headers, 'Content-Type': 'application/json' };
+      body = JSON.stringify({
+        name: productData.name,
+        artist: productData.artist
+      });
+      endpoint = `/api/v1/products/${productData.id}`;
+    }
+
+    const response = await fetch(endpoint, {
+      method: 'PUT',
+      headers,
+      body,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update product');
+    }
+
+    return response.json();
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  'products/deleteProduct',
+  async (productId: number, { getState }) => {
+    const response = await fetch(`/api/v1/products/${productId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(getState),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete product');
+    }
+
+    return productId;
   }
 );
 
@@ -127,6 +169,27 @@ const productsSlice = createSlice({
       .addCase(createProduct.rejected, (state, action) => {
         state.isCreating = false;
         state.error = action.error.message || 'Failed to create product';
+      })
+      .addCase(updateProduct.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(updateProduct.fulfilled, (state, action: PayloadAction<Product>) => {
+        const index = state.products.findIndex(p => p.id === action.payload.id);
+        if (index !== -1) {
+          state.products[index] = action.payload;
+        }
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.error = action.error.message || 'Failed to update product';
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action: PayloadAction<number>) => {
+        state.products = state.products.filter(p => p.id !== action.payload);
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.error = action.error.message || 'Failed to delete product';
       });
   },
 });
