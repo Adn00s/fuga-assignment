@@ -34,6 +34,16 @@ class ProductService {
 
     return this.db.insert(productData);
   }
+
+  update(id, productData) {
+    l.info(`${this.constructor.name}.update(${id})`, productData);
+    return this.db.update(id, productData);
+  }
+
+  delete(id) {
+    l.info(`${this.constructor.name}.delete(${id})`);
+    return this.db.delete(id);
+  }
 }
 
 export default new ProductService();

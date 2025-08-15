@@ -236,6 +236,121 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - Products
+      description: Update an existing music product
+      parameters:
+        - name: id
+          in: path
+          description: The id of the product to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Updated product data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductBody'
+        required: true
+      responses:
+        200:
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        4XX:
+          description: Invalid product data or product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        5XX:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - Products
+      description: Delete a music product
+      parameters:
+        - name: id
+          in: path
+          description: The id of the product to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Product deleted successfully
+        4XX:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        5XX:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/{id}/upload:
+    put:
+      tags:
+        - Products
+      description: Update an existing music product with file upload
+      parameters:
+        - name: id
+          in: path
+          description: The id of the product to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Updated product data with cover art upload
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                artist:
+                  type: string
+                type:
+                  type: string
+                price:
+                  type: string
+                releaseDate:
+                  type: string
+                coverArt:
+                  type: string
+                  format: binary
+        required: true
+      responses:
+        200:
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        4XX:
+          description: Invalid product data or product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        5XX:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /spec:
     get:
       tags:

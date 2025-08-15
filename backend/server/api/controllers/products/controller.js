@@ -82,5 +82,81 @@ export class Controller {
       res.status(500).json({ error: 'Failed to create product with upload' });
     }
   }
+
+  async update(req, res) {
+    try {
+      const productData = { ...req.body };
+      const { id } = req.params;
+
+      if (productData.price) {
+        productData.price = parseFloat(productData.price);
+      }
+
+      const errors = validateProductData(productData);
+      if (errors.length > 0) {
+        return res
+          .status(400)
+          .json({ error: 'Validation failed', details: errors });
+      }
+
+      const result = await ProductService.update(id, productData);
+      if (!result) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+
+      res.json(result);
+    } catch (error) {
+      console.error('Update error:', error);
+      res.status(500).json({ error: 'Failed to update product' });
+    }
+  }
+
+  async updateWithUpload(req, res) {
+    try {
+      const productData = { ...req.body };
+      const { id } = req.params;
+
+      if (productData.price) {
+        productData.price = parseFloat(productData.price);
+      }
+
+      const errors = validateProductData(productData);
+      if (errors.length > 0) {
+        return res
+          .status(400)
+          .json({ error: 'Validation failed', details: errors });
+      }
+
+      if (req.file) {
+        productData.coverArt = `/uploads/${req.file.filename}`;
+      }
+
+      const result = await ProductService.update(id, productData);
+      if (!result) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+
+      res.json(result);
+    } catch (error) {
+      console.error('Update with upload error:', error);
+      res.status(500).json({ error: 'Failed to update product with upload' });
+    }
+  }
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params;
+      const result = await ProductService.delete(id);
+      
+      if (!result) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+
+      res.status(204).end();
+    } catch (error) {
+      console.error('Delete error:', error);
+      res.status(500).json({ error: 'Failed to delete product' });
+    }
+  }
 }
 export default new Controller();

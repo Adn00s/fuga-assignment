@@ -28,6 +28,14 @@ export default express
     handleUploadError,
     controller.createWithUpload
   )
+  .put(
+    '/:id/upload',
+    upload.single('coverArt'),
+    handleUploadError,
+    controller.updateWithUpload
+  )
   .post('/', controller.create)
   .get('/', controller.all)
-  .get('/:id', controller.byId);
+  .get('/:id', controller.byId)
+  .put('/:id', controller.update)
+  .delete('/:id', controller.delete);
