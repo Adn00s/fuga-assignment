@@ -101,7 +101,7 @@ export class Controller {
   async me(req, res) {
     try {
       const { userId } = req.user;
-      
+
       const result = await db.query(
         'SELECT id, email, name, created_at FROM users WHERE id = $1',
         [userId]

@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import http from 'http';
 import os from 'os';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 import l from './logger.js';
 import OpenApiValidator from 'express-openapi-validator';
 import errorHandler from '../api/middlewares/error.handler.js';
@@ -27,6 +29,32 @@ export default class ExpressServer {
     );
 
     app.use(
+      helmet({
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false,
+      })
+    );
+
+    const limiter = rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 100,
+      message: 'Too many requests',
+    });
+    app.use(limiter);
+
+    const authLimiter = rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 5,
+      message: 'Too many login attempts',
+    });
+
+    const uploadLimiter = rateLimit({
+      windowMs: 60 * 60 * 1000,
+      max: 10,
+      message: 'Too many uploads',
+    });
+
+    app.use(
       cors({
         origin: process.env.FRONTEND_URL || 'http://localhost:3001',
         credentials: true,
@@ -44,6 +72,18 @@ export default class ExpressServer {
     app.use(cookieParser(process.env.SESSION_SECRET));
     app.use(Express.static(`${root}/public`));
     app.use('/uploads', Express.static(`${root}/uploads`));
+
+    app.use('/api/v1/auth', authLimiter);
+
+    app.use('/api/v1/products', (req, res, next) => {
+      if (
+        req.method === 'POST' &&
+        req.headers['content-type']?.includes('multipart/form-data')
+      ) {
+        return uploadLimiter(req, res, next);
+      }
+      next();
+    });
 
     app.use(process.env.OPENAPI_SPEC || '/spec', Express.static(apiSpec));
     app.use(

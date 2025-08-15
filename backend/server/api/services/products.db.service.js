@@ -29,9 +29,10 @@ class ProductsDatabase {
 
     if (search) {
       const term = search.toLowerCase();
-      data = data.filter(p => 
-        p.name.toLowerCase().includes(term) || 
-        p.artist.toLowerCase().includes(term)
+      data = data.filter(
+        (p) =>
+          p.name.toLowerCase().includes(term) ||
+          p.artist.toLowerCase().includes(term)
       );
     }
 

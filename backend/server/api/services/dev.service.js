@@ -13,9 +13,9 @@ class DevService {
         path.join(__dirname, '../../../scripts/seed-dev.sql'),
         'utf8'
       );
-      
+
       await db.query(seedScript);
-      
+
       return {
         success: true,
         message: 'Database reset with development data',

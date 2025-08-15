@@ -11,7 +11,11 @@ class ProductsDatabasePG {
       params.push(`%${search}%`);
     }
 
-    query += ' ORDER BY created_at DESC LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2);
+    query +=
+      ' ORDER BY created_at DESC LIMIT $' +
+      (params.length + 1) +
+      ' OFFSET $' +
+      (params.length + 2);
     params.push(limit, offset);
 
     const result = await db.query(query, params);
