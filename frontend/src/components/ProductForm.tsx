@@ -44,7 +44,7 @@ const ProductForm = () => {
       if (fileInput) fileInput.value = '';
       alert('Product created!');
     } catch (error) {
-      console.log('create failed:', error); // debug
+      console.log('create failed:', error);
       alert('Something went wrong');
     }
   };
