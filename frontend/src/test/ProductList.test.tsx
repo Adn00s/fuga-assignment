@@ -5,6 +5,7 @@ import ProductList from '../components/ProductList';
 import productsSlice from '../store/slices/productsSlice';
 import authSlice from '../store/authSlice';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createTestStore = (initialState: Record<string, any> = {}) => {
   return configureStore({
     reducer: {
