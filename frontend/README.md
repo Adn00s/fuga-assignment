@@ -9,8 +9,8 @@ npm install
 npm run dev
 ```
 
-Runs on http://localhost:3000
-Backend API calls proxy to http://localhost:8000
+Runs on http://localhost:3001
+Backend API calls proxy to http://localhost:3000
 
 ## Features
 
@@ -47,4 +47,4 @@ src/
 └── App.tsx        # Main app component
 ```
 
-Backend should be running on port 8000 for API calls to work.
+Backend should be running on port 3000 for API calls to work.

@@ -12,15 +12,15 @@ npm run migrate up
 npm run dev
 ```
 
-Server runs on http://localhost:8000
-API docs at http://localhost:8000/api-docs
+Server runs on http://localhost:3000
+API docs at http://localhost:3000/api-docs
 
 ## Environment (.env)
 
 ```env
 DATABASE_URL=postgresql://user:pass@localhost:5432/fuga_music
 JWT_SECRET=your-secret-here
-PORT=8000
+PORT=3000
 ```
 
 ## Main Endpoints
