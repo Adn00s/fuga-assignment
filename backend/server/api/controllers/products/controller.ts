@@ -1,7 +1,8 @@
 import ProductService from '../../services/products.prisma.service.js';
+import { Request, Response } from 'express';
 
-const validateProductData = (data) => {
-  const errors = [];
+const validateProductData = (data: any): string[] => {
+  const errors: string[] = [];
 
   if (!data.name || data.name.trim().length === 0) {
     errors.push('Product name is required');
@@ -27,22 +28,24 @@ const validateProductData = (data) => {
 };
 
 export class Controller {
-  all(req, res) {
+  all(req: Request, res: Response) {
     const { search, limit = 20, page = 1 } = req.query;
-    const offset = (page - 1) * limit;
-    ProductService.all({ search, limit: +limit, offset }).then((r) =>
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
+    const offset = (pageNum - 1) * limitNum;
+    ProductService.all({ search, limit: limitNum, offset }).then((r) =>
       res.json(r)
     );
   }
 
-  byId(req, res) {
+  byId(req: Request, res: Response) {
     ProductService.byId(req.params.id).then((r) => {
       if (r) res.json(r);
       else res.status(404).end();
     });
   }
 
-  create(req, res) {
+  create(req: Request, res: Response) {
     const errors = validateProductData(req.body);
     if (errors.length > 0) {
       return res

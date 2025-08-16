@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "es2020",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": false,
+    "noEmit": false
+  },
+  "ts-node": {
+    "esm": true
+  },
+  "include": [
+    "server/**/*",
+    "scripts/**/*",
+    "test/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "uploads"
+  ]
+}

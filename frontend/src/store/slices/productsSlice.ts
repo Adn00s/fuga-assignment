@@ -1,23 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-
-export interface Product {
-  id: number;
-  name: string;
-  artist: string;
-  cover_art?: string;
-  created_at: string;
-}
-
-interface ProductsState {
-  products: Product[];
-  isLoading: boolean;
-  error: string | null;
-  isCreating: boolean;
-  searchQuery: string;
-  selectedArtist: string;
-  sortBy: 'newest' | 'alphabetical';
-}
+import type { Product, ProductsState } from '../../types';
 
 const initialState: ProductsState = {
   products: [],
@@ -27,6 +10,7 @@ const initialState: ProductsState = {
   searchQuery: '',
   selectedArtist: '',
   sortBy: 'newest',
+  sortOrder: 'desc',
 };
 
 const getAuthHeaders = (getState: any): Record<string, string> => {
@@ -79,8 +63,7 @@ export const updateProduct = createAsyncThunk(
   'products/updateProduct',
   async (productData: { id: number; name: string; artist: string; coverArt?: File }, { getState }) => {
     if (productData.coverArt) {
-      // For file uploads, use FormData like createProduct
-      const formData = new FormData();
+            const formData = new FormData();
       formData.append('name', productData.name);
       formData.append('artist', productData.artist);
       formData.append('coverArt', productData.coverArt);
@@ -97,8 +80,7 @@ export const updateProduct = createAsyncThunk(
 
       return response.json();
     } else {
-      // For regular updates, use JSON
-      const response = await fetch(`/api/v1/products/${productData.id}`, {
+            const response = await fetch(`/api/v1/products/${productData.id}`, {
         method: 'PUT',
         headers: { 
           ...getAuthHeaders(getState), 

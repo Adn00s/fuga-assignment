@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useAppDispatch } from '../store/hooks';
 import { updateProduct } from '../store/slices/productsSlice';
-import type { Product } from '../store/slices/productsSlice';
-import './ProductForm.css';
+import type { Product } from '../types'; import './ProductForm.css';
 
 interface EditProductFormProps {
   product: Product;

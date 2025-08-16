@@ -1,4 +1,4 @@
-import Express from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import path from 'path';
@@ -12,7 +12,7 @@ import l from './logger.js';
 import OpenApiValidator from 'express-openapi-validator';
 import errorHandler from '../api/middlewares/error.handler.js';
 
-const app = new Express();
+const app: Application = express();
 
 // Get dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -70,8 +70,8 @@ export default class ExpressServer {
     );
     app.use(bodyParser.text({ limit: process.env.REQUEST_LIMIT || '100kb' }));
     app.use(cookieParser(process.env.SESSION_SECRET));
-    app.use(Express.static(`${root}/public`));
-    app.use('/uploads', Express.static(`${root}/uploads`));
+    app.use(express.static(`${root}/public`));
+    app.use('/uploads', express.static(`${root}/uploads`));
 
     app.use('/api/v1/auth', authLimiter);
 
@@ -85,7 +85,7 @@ export default class ExpressServer {
       next();
     });
 
-    app.use(process.env.OPENAPI_SPEC || '/spec', Express.static(apiSpec));
+    app.use(process.env.OPENAPI_SPEC || '/spec', express.static(apiSpec));
     app.use(
       OpenApiValidator.middleware({
         apiSpec,
@@ -95,14 +95,14 @@ export default class ExpressServer {
     );
   }
 
-  router(routes) {
+  router(routes: any): ExpressServer {
     routes(app);
     app.use(errorHandler);
     return this;
   }
 
-  listen(port = process.env.PORT) {
-    const welcome = (p) => () =>
+  listen(port: string | number = process.env.PORT): Application {
+    const welcome = (p: string | number) => () =>
       l.info(
         `up and running in ${
           process.env.NODE_ENV || 'development'

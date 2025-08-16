@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { fetchProducts, deleteProduct, type Product } from '../store/slices/productsSlice';
-import SearchFilters from './SearchFilters';
+import { fetchProducts, deleteProduct } from '../store/slices/productsSlice';
+import type { Product } from '../types'; import SearchFilters from './SearchFilters';
 import EditProductForm from './EditProductForm';
 import './ProductList.css';
 
@@ -42,8 +42,7 @@ const ProductList = () => {
     return filtered;
   }, [products, searchQuery, selectedArtist, sortBy]);
 
-  // Event handlers for edit and delete
-  const handleEdit = (product: Product) => {
+    const handleEdit = (product: Product) => {
     setEditingProduct(product);
   };
 
