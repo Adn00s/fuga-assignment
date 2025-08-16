@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { createProduct } from '../store/slices/productsSlice';
 import './ProductForm.css';
@@ -7,6 +7,7 @@ const ProductForm = () => {
   const dispatch = useAppDispatch();
   const { isCreating } = useAppSelector((state) => state.products);
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -88,15 +89,34 @@ const ProductForm = () => {
 
         <div className="form-group">
           <label htmlFor="coverArt">Cover Art</label>
-          <input
-            type="file"
-            id="coverArt"
-            name="coverArt"
-            onChange={handleInputChange}
-            accept="image/*"
-          />
+          <div className="file-input-wrapper">
+            <input
+              type="file"
+              id="coverArt"
+              name="coverArt"
+              onChange={handleInputChange}
+              accept="image/*"
+              title="Click to choose an image file"
+              style={{ display: 'none' }}
+              ref={fileInputRef}
+            />
+            <button
+              type="button"
+              className="file-select-btn"
+              onClick={() => {
+                if (fileInputRef.current) {
+                  fileInputRef.current.click();
+                }
+              }}
+            >
+              Choose File
+            </button>
+          </div>
           {formData.coverArt && (
             <p className="file-info">Selected: {formData.coverArt.name}</p>
+          )}
+          {!formData.coverArt && (
+            <p className="file-hint">Click "Choose File" to select an image</p>
           )}
         </div>
 
