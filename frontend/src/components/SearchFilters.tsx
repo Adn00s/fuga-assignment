@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setSearchQuery, setSelectedArtist, setSortBy } from '../store/slices/productsSlice';
 import './SearchFilters.css';
@@ -16,8 +16,11 @@ const SearchFilters = () => {
     return () => clearTimeout(timer);
   }, [searchInput, dispatch]);
 
-  const artists = [...new Set(products.map(p => p.artist))].sort();
-  console.log('artists loaded:', artists.length); 
+  const artists = useMemo(() => {
+    const uniqueArtists = [...new Set(products.map(p => p.artist))].sort();
+    return uniqueArtists;
+  }, [products]); 
+  
   return (
     <div className="search-filters">
       <div className="search-group">
