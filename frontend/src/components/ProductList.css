@@ -221,7 +221,12 @@
   
   .product-list-container {
     margin: 1rem auto;
-    padding: 0 0.5rem;
+    padding: 0;
+  }
+  
+  .product-list-container h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
   }
 }
 
@@ -229,5 +234,15 @@
   .products-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .product-list-container {
+    margin: 0.5rem auto;
+  }
+  
+  .product-list-container h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
   }
 }

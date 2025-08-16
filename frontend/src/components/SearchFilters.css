@@ -49,11 +49,21 @@
   .search-filters {
     flex-direction: column;
     gap: 12px;
+    margin: 0 -0.25rem 24px -0.25rem;
+    padding: 12px;
   }
   
   .search-group,
   .filter-group,
   .sort-group {
     min-width: auto;
+    width: 100%;
+  }
+  
+  .search-input,
+  .artist-filter,
+  .sort-select {
+    width: 100%;
+    box-sizing: border-box;
   }
 }
