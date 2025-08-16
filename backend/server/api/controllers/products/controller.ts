@@ -1,5 +1,6 @@
 import ProductService from '../../services/products.prisma.service.js';
 import { Request, Response } from 'express';
+import l from '../../../common/logger.js';
 
 const validateProductData = (data: any): string[] => {
   const errors: string[] = [];
@@ -56,7 +57,7 @@ export class Controller {
     ProductService.create(req.body)
       .then((r) => res.status(201).location(`/api/v1/products/${r.id}`).json(r))
       .catch((error) => {
-        console.error('Product creation error:', error);
+        l.error('Product creation failed', { error: error.message, body: req.body });
         res.status(500).json({ error: 'Failed to create product' });
       });
   }
@@ -83,7 +84,7 @@ export class Controller {
       const result = await ProductService.create(productData);
       res.status(201).location(`/api/v1/products/${result.id}`).json(result);
     } catch (error) {
-      console.error('Upload error:', error);
+      l.error('Product upload failed', { error: error.message, requestBody: req.body });
       res.status(500).json({ error: 'Failed to create product with upload' });
     }
   }
@@ -111,7 +112,7 @@ export class Controller {
 
       res.json(result);
     } catch (error) {
-      console.error('Update error:', error);
+      l.error('Product update failed', { error: error.message, productId: req.params.id });
       res.status(500).json({ error: 'Failed to update product' });
     }
   }
@@ -143,7 +144,7 @@ export class Controller {
 
       res.json(result);
     } catch (error) {
-      console.error('Update with upload error:', error);
+      l.error('Product update with upload failed', { error: error.message, productId: req.params.id });
       res.status(500).json({ error: 'Failed to update product with upload' });
     }
   }
@@ -159,7 +160,7 @@ export class Controller {
 
       res.status(204).end();
     } catch (error) {
-      console.error('Delete error:', error);
+      l.error('Product deletion failed', { error: error.message, productId: req.params.id });
       res.status(500).json({ error: 'Failed to delete product' });
     }
   }

@@ -27,7 +27,6 @@ const ProductForm = () => {
     e.preventDefault();
     
     if (!formData.name || !formData.artist) {
-      alert('Please fill in all required fields');
       return;
     }
 
@@ -42,10 +41,8 @@ const ProductForm = () => {
       setFormData({ name: '', artist: '', coverArt: null });
       const fileInput = document.getElementById('coverArt') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-      alert('Product created!');
     } catch (error) {
-      console.log('create failed:', error);
-      alert('Something went wrong');
+      console.error('Form reset error:', error);
     }
   };
 

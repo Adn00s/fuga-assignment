@@ -22,14 +22,18 @@ function App() {
     try {
       await dispatch(loginUser({ email, password })).unwrap();
       setShowAuthModal(false);
-    } catch { /* empty */ }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   };
 
   const handleRegister = async (email: string, password: string, name: string) => {
     try {
       await dispatch(registerUser({ email, password, name })).unwrap();
       setShowAuthModal(false);
-    } catch { /* empty */ }
+    } catch (error) {
+      console.error('Registration error:', error);
+    }
   };
 
   const handleCloseModal = () => {

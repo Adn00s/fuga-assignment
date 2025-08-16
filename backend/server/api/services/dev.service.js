@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import db from '../../common/db.js';
+import logger from '../../common/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +23,10 @@ class DevService {
         timestamp: new Date().toISOString(),
       };
     } catch (error) {
-      console.error('Error resetting database:', error);
+      logger.error('Database reset failed', {
+        error: error.message,
+        stack: error.stack,
+      });
       throw new Error(`Database reset failed: ${error.message}`);
     }
   }

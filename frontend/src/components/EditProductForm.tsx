@@ -22,7 +22,6 @@ const EditProductForm = ({ product, onCancel, onSuccess }: EditProductFormProps)
     e.preventDefault();
     
     if (!formData.name || !formData.artist) {
-      alert('Please fill in all required fields');
       return;
     }
 
@@ -36,8 +35,7 @@ const EditProductForm = ({ product, onCancel, onSuccess }: EditProductFormProps)
       
       onSuccess();
     } catch (error) {
-      console.log('update failed:', error);
-      alert('Failed to update product');
+      console.error('Update error:', error);
     }
   };
 
